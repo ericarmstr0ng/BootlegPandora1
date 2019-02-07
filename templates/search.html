@@ -3,6 +3,7 @@
 {% block content %}
 
 <div class="container">
+<h1 class="display-4">Search Music!</h1>
     <div class="col-md-auto">
       <div class="row justify-content-md-center">
         <form>
@@ -18,7 +19,7 @@
             <input type="text" class="form-control" id="Song" aria-describedby="songHelp" placeholder="Song">
             </div>
             <button type="submit" class="btn btn-primary">Search Song</button>
-        </form>  
+        </form>
         <form>
             <div class="form-group">
             <label for="Album">Album</label>
@@ -32,8 +33,73 @@
             <input type="text" class="form-control" id="Composer" aria-describedby="composerHelp" placeholder="Composer">
             </div>
             <button type="submit" class="btn btn-primary">Search Composer</button>
-        </form>    
+        </form>
     </div>
 </div>
+<hr class="my-4">
+<h1 class="display-4">Add Music!</h1>
+<span class="badge badge-pill badge-info">Add Artist</span>
+    <div class="form-row pb-3">
+        <div class="col-sml">
+            <form action="">
+                <div class="form-group">
+                    <label for="Artist">Artist</label>
+                    <input type="text" class="form-control" id="Artist" aria-describedby="artistHelp" placeholder="Artist">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Artist</button>
+            </form>
+        </div>
+    </div>
+    <span class="badge badge-pill badge-info">Add Composer</span>
+    <div class="form-row pb-3">
+        <div class="col-sml">
+            <form action="">
+                <div class="form-group">
+                    <label for="Composer">Composer</label>
+                    <input type="text" class="form-control" id="Composer" aria-describedby="artistHelp" placeholder="Composer">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Composer</button>
+            </form>
+        </div>
+    </div>
+<span class="badge badge-pill badge-info">Add Song</span>
+   <form action="" class = "pb-3">
+        <div class="form-row">
+            <div class="col-sml mb-3">
+                <label for="Artist">Artist</label>
+                <input type="text" class="form-control" id="Artist" aria-describedby="artistHelp" placeholder="Artist">
+            </div>
+            <div class="col-sml mb-3">
+                <label for="Song">Song</label>
+                <input type="text" class="form-control" id="Song" placeholder="Song">
+            </div>
+            <div class="col-sml mb-3">
+                <label for="Album">Album</label>
+                <input type="text" class="form-control" id="Album" placeholder="Album(Optional)">
+            </div>
+            <div class="col-sml mb-3">
+                <label for="Composer">Composer</label>
+                <input type="text" class="form-control" id="Composer" placeholder="Composer">
+            </div>
+        </div>
+       <button type="submit" class="btn btn-primary">Add Song</button>
+    </form>
+
+<span class="badge badge-pill badge-info">Add Album</span>
+   <form action="" class = "pb-3">
+        <div class="form-row">
+            <div class="col-sml mb-3">
+                <label for="Artist">Artist</label>
+                <input type="text" class="form-control" id="Artist" aria-describedby="artistHelp" placeholder="Artist">
+            </div>
+            <div class="col-sml mb-3">
+                <label for="Album">Album</label>
+                <input type="text" class="form-control" id="Album" placeholder="Album">
+
+            </div>
+
+        </div>
+ <button type="submit" class="btn btn-primary">Add Album</button>
+    </form>
 
 {% endblock %}
