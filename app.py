@@ -1,7 +1,10 @@
 from flask import Flask
 from flask import render_template
 
-app = Flask(__name__)
+from factory import create_app
+from db import connection
+
+app = create_app()
 
 
 @app.route('/')
@@ -21,5 +24,14 @@ def search():
     return render_template('search.html')
 
 
+
+@app.route('/db-test/', methods=["GET","POST"])
+def dbTest():
+	try:
+		c, conn = connection()
+		return "good"
+	except Exception as e:
+		return(str(e))
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=56565)
