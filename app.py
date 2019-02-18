@@ -23,6 +23,9 @@ def signup():
 def search():
     return render_template('search.html')
 
+@app.route('/display_data')
+def display_data():
+    return render_template('displayData.html')
 
 
 @app.route('/db-test/', methods=["GET","POST"])
