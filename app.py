@@ -20,7 +20,9 @@ def homepage():
 def login():
 	if request.method == 'GET':
 		return render_template('login.html')
-	else:
+	try:
+		session["loggedIn"]
+	except:
 		if db.try_signon(request.form["email"], request.form["password"]):
 			session["loggedIn"] = True
 			session["username"] = db.get_username(request.form["email"])
@@ -29,6 +31,51 @@ def login():
 
 		else:
 			return render_template('badLogin.html')
+	else:
+		return render_template('base.html')
+
+@app.route('/new-artist', methods=["POST"])
+def newArtist():
+	try:
+		session["loggedIn"]
+	except:
+		return render_template('login.html')
+	else:
+		db.create_artist(request.form["artist"], session["username"])
+
+		return render_template('dataAdded.html', data=request.form["artist"])
+
+@app.route('/new-composer', methods=["POST"])
+def newComposer():
+	try:
+		session["loggedIn"]
+	except:
+		return render_template('login.html')
+	else:
+		db.create_composer(request.form["composer"], session["username"])
+
+		return render_template('dataAdded.html', data=request.form["composer"])
+
+@app.route('/new-album', methods=["post"])
+def newAlbum():
+	try:
+		session["loggedIn"]
+	except:
+		return render_template('login.html')
+	else:
+		db.create_album(session["username"], request.form["album"], request.form["artist"])
+		return render_template('dataAdded.html', data=request.form["album"]);
+
+@app.route('/new-song', methods=["post"])
+def newSong():
+	try:
+		session["loggedIn"]
+	except:
+		return render_template('login.html')
+	else:
+		db.create_song(session["username"], request.form["artist"], request.form["song"], request.form["album"], request.form["composer"])
+
+		return render_template('dataAdded.html', data=request.form["song"])
 
 @app.route('/signup')
 def signup():
