@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="display-4">{{ song }}</h1>
+    <h2 class="display-6">Song Info</h2>
+
+    <table class="table table-sm table-condensed table-bordered">
+        <thead>
+        <th>Album</th>
+        <th>Producer</th>
+        <th>Release Date</th>
+        <th>Genre</th>
+        <th>Link</th>
+        </thead>
+        <tbody>
+        {% for r in song_data %}
+            <tr class="table-active">
+                <td> {{ r.0 }}</td>
+                <td> {{ r.1 }}</td>
+                <td> {{ r.2 }}</td>
+                <td> {{ r.3 }}</td>
+                <td> {{ r.4 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    </div>
+    <hr class="my-4">
+    <div>
+        <button type="submit" class="btn btn-primary">Delete Record</button>
+    </div>
+
+
+{% endblock %}

@@ -6,31 +6,35 @@
 <h1 class="display-4">Search Music!</h1>
     <div class="col-md-auto">
       <div class="row justify-content-md-center">
-        <form>
+          <form method="post" action="find-artist">
             <div class="form-group">
-            <label for="Artist">Artist</label>
-            <input type="text" class="form-control" id="Artist" aria-describedby="artistHelp" placeholder="Artist">
+                <label for="Artist">Artist</label>
+                <input type="text" class="form-control" name="artist" id="Artist" aria-describedby="artistHelp"
+                       placeholder="Artist">
             </div>
             <button type="submit" class="btn btn-primary">Search Artist</button>
         </form>
-        <form>
+          <form method="post" action="find-song">
             <div class="form-group">
-            <label for="Song">Song</label>
-            <input type="text" class="form-control" id="Song" aria-describedby="songHelp" placeholder="Song">
+                <label for="Song">Song</label>
+                <input type="text" class="form-control" name="song" id="Song" aria-describedby="songHelp"
+                       placeholder="Song">
             </div>
             <button type="submit" class="btn btn-primary">Search Song</button>
         </form>
-        <form>
+          <form method="post" action="find-album">
             <div class="form-group">
             <label for="Album">Album</label>
-            <input type="text" class="form-control" id="Album" aria-describedby="albumHelp" placeholder="Album">
+                <input type="text" class="form-control" name="album" id="Album" aria-describedby="albumHelp"
+                       placeholder="Album">
             </div>
             <button type="submit" class="btn btn-primary">Search Album</button>
         </form>
-        <form>
+          <form method="post" action="find-composer">
             <div class="form-group">
             <label for="Composer">Composer</label>
-            <input type="text" class="form-control" id="Composer" aria-describedby="composerHelp" placeholder="Composer">
+                <input type="text" class="form-control" name="composer" id="Composer" aria-describedby="composerHelp"
+                       placeholder="Composer">
             </div>
             <button type="submit" class="btn btn-primary">Search Composer</button>
         </form>
