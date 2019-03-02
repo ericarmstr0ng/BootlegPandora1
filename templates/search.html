@@ -6,10 +6,11 @@
 <h1 class="display-4">Search Music!</h1>
     <div class="col-md-auto">
       <div class="row justify-content-md-center">
-        <form>
+          <form method="post" action="find-artist">
             <div class="form-group">
-            <label for="Artist">Artist</label>
-            <input type="text" class="form-control" id="Artist" aria-describedby="artistHelp" placeholder="Artist">
+                <label for="Artist">Artist</label>
+                <input type="text" class="form-control" name="artist" id="Artist" aria-describedby="artistHelp"
+                       placeholder="Artist">
             </div>
             <button type="submit" class="btn btn-primary">Search Artist</button>
         </form>

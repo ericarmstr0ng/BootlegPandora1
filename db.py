@@ -205,3 +205,22 @@ def create_user(username, password, email):
 	c.close()
 	conn.close()
 
+
+def display_artist(artistName, username):
+	userId = get_user_id(username)
+	c, conn = connection()
+
+	c.execute(
+		"SELECT album.name, album.release_date, album.url, a.name FROM album JOIN artist_album aa on album.id = aa.album_id JOIN artist a on aa.artist_id = a.id JOIN user_artist ua on a.id = ua.artist_id WHERE user_id = '{}' AND a.name = '{}'".format(
+			userId, artistName))
+
+	album_data = c.fetchall()
+
+	c.execute(
+		"SELECT DISTINCT song.name, album.name, composer.name, song.release_date, song.genre, song.url FROM song JOIN artist_song sa on song.id = sa.song_id JOIN artist a on sa.artist_id = a.id JOIN user_artist ua on a.id = ua.artist_id JOIN album on album.id = song.album_id JOIN composer_song cs on cs.song_id = song.id JOIN composer on cs.composer_id = composer.id WHERE user_id = '{{}}' AND a.name = '{{}}'".format(
+			userId, artistName))
+	song_data = c.fetchall()
+
+	c.close()
+	conn.close()
+	return album_data, song_data

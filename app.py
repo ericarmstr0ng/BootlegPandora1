@@ -9,7 +9,6 @@ import db
 
 app = create_app()
 app.config.from_object(__name__)
-
 Session(app)
 
 @app.route('/')
@@ -33,6 +32,20 @@ def login():
 			return render_template('badLogin.html')
 	else:
 		return render_template('base.html')
+
+
+@app.route('/find-artist', methods=["POST"])
+def findArtist():
+	try:
+		session["loggedIn"]
+	except:
+		return render_template('login.html')
+	else:
+		artist_list, song_list = db.display_artist(request.form["artist"], session["username"])
+
+		return render_template('display_by_artist.html', album_data=artist_list, song_data=song_list,
+							   artist=request.form["artist"])
+
 
 @app.route('/new-artist', methods=["POST"])
 def newArtist():
@@ -63,7 +76,7 @@ def newAlbum():
 	except:
 		return render_template('login.html')
 	else:
-		db.create_album(session["username"], request.form["album"], request.form["artist"])
+		db.create_album(session["username"], request.form["artist"], request.form["album"])
 		return render_template('dataAdded.html', data=request.form["album"]);
 
 @app.route('/new-song', methods=["post"])
