@@ -166,13 +166,14 @@ def create_album(username, artist, album):
 		
 	return album_id
 
-def create_song(username, artist, song, album, composer=None):
+
+def create_song(username, artist, song, album, composer):
 	c, conn = connection()
 
 	artist_id = create_artist(artist, username)
 	
 	album_id = create_album(username, artist, album)
-
+	print(composer)
 	if composer == None or composer == "":
 		composer_id = None
 	else:
@@ -215,12 +216,62 @@ def display_artist(artistName, username):
 			userId, artistName))
 
 	album_data = c.fetchall()
-
+	print(album_data)
 	c.execute(
-		"SELECT DISTINCT song.name, album.name, composer.name, song.release_date, song.genre, song.url FROM song JOIN artist_song sa on song.id = sa.song_id JOIN artist a on sa.artist_id = a.id JOIN user_artist ua on a.id = ua.artist_id JOIN album on album.id = song.album_id JOIN composer_song cs on cs.song_id = song.id JOIN composer on cs.composer_id = composer.id WHERE user_id = '{{}}' AND a.name = '{{}}'".format(
+		"SELECT DISTINCT song.name, album.name, composer.name, song.release_date, song.genre, song.url FROM song JOIN artist_song sa on song.id = sa.song_id JOIN artist a on sa.artist_id = a.id JOIN user_artist ua on a.id = ua.artist_id JOIN album on album.id = song.album_id JOIN composer_song cs on cs.song_id = song.id JOIN composer on cs.composer_id = composer.id WHERE user_id = '{}' AND a.name = '{}'".format(
 			userId, artistName))
 	song_data = c.fetchall()
 
 	c.close()
 	conn.close()
 	return album_data, song_data
+
+
+def display_song(songName, username):
+	userId = get_user_id(username)
+	c, conn = connection()
+	c.execute(
+		"SELECT DISTINCT album.name, composer.name, song.release_date, song.genre, song.url FROM song JOIN artist_song sa on song.id = sa.song_id JOIN artist a on sa.artist_id = a.id JOIN user_artist ua on a.id = ua.artist_id JOIN album on album.id = song.album_id JOIN composer_song cs on cs.song_id = song.id JOIN composer on cs.composer_id = composer.id WHERE user_id = '{}' AND song.name = '{}'".format(
+			userId, songName))
+
+	song_data = c.fetchall()
+	print(userId)
+	print(songName)
+	print('{{}}'.format(
+		songName))
+	c.close()
+	conn.close()
+	return song_data
+
+
+def display_album(albumName, username):
+	userId = get_user_id(username)
+	c, conn = connection()
+	c.execute(
+		"SELECT DISTINCT song.name, composer.name, song.release_date, song.genre, song.url, a.name FROM song JOIN artist_song sa on song.id = sa.song_id JOIN artist a on sa.artist_id = a.id JOIN user_artist ua on a.id = ua.artist_id JOIN album on album.id = song.album_id JOIN composer_song cs on cs.song_id = song.id JOIN composer on cs.composer_id = composer.id WHERE user_id = '{}' AND album.name = '{}'".format(
+			userId, albumName))
+
+	album_data = c.fetchall()
+	print(userId)
+	print(albumName)
+	print('{{}}'.format(
+		albumName))
+	artist_name = album_data[0][5]
+	c.close()
+	conn.close()
+	return album_data, artist_name
+
+
+def display_composer(composerName, username):
+	userId = get_user_id(username)
+	c, conn = connection()
+	c.execute(
+		"SELECT DISTINCT song.name, a.name, song.release_date, song.genre, song.url FROM song JOIN artist_song sa on song.id = sa.song_id JOIN artist a on sa.artist_id = a.id JOIN user_artist ua on a.id = ua.artist_id JOIN album on album.id = song.album_id JOIN composer_song cs on cs.song_id = song.id JOIN composer on cs.composer_id = composer.id WHERE user_id = '{}' AND composer.name = '{}'".format(
+			userId, composerName))
+
+	composer_data = c.fetchall()
+	print(userId)
+	print(composerName)
+	c.close()
+	conn.close()
+	return composer_data
