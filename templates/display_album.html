@@ -28,10 +28,35 @@
 
 
     </div>
-    <hr class="my-4">
-    <div>
-        <button type="submit" class="btn btn-primary">Delete Record</button>
-    </div>
+    <h2 class="display-6">Add song to "{{ album }}"</h2>
+    <form action="update-album" method="post" class="pb-3">
+        <input type="hidden" name="artist" value="{{ artist }}"/>
+        <input type="hidden" name="album" value="{{ album }}"/>
+        <div class="form-row">
+            <div class="col-sml mb-3">
+                <label for="Song">Song</label>
+                <input type="text" name="song" class="form-control" id="Song" placeholder="Song">
+            </div>
+            <div class="col-sml mb-3">
+                <label for="Composer">Producer</label>
+                <input type="text" name="composer" class="form-control" id="Composer" placeholder="Composer (Optional)">
+            </div>
+            <div class="col-sml mb-3">
+                <label for="Release">Release Date</label>
+                <input type="text" name="release" class="form-control" id="Release"
+                       placeholder="Release Date (Optional)">
+            </div>
+            <div class="col-sml mb-3">
+                <label for="Genre">Genre</label>
+                <input type="text" name="genre" class="form-control" id="Genre" placeholder="Genre (Optional)">
+            </div>
+            <div class="col-sml mb-3">
+                <label for="Link">Link</label>
+                <input type="text" name="link" class="form-control" id="Link" placeholder="Link (Optional)">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Song</button>
+    </form>
 
 
 {% endblock %}

@@ -136,6 +136,21 @@ def newSong():
         return redirect(url_for('search'))
 
 
+@app.route('/update-album', methods=["post"])
+def updateAlbum():
+    try:
+        session["loggedIn"]
+    except:
+        return render_template('login.html')
+    else:
+        album_list = db.update_album(session["username"], request.form["artist"], request.form["album"],
+                                     request.form["song"], request.form["composer"], request.form["release"],
+                                     request.form["genre"], request.form["link"])
+        flash('Song Added')
+        return render_template('display_album.html', album_data=album_list, album=request.form["album"],
+                               artist=request.form["artist"])
+
+
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
@@ -145,6 +160,15 @@ def signup():
 def search():
     return render_template('search.html')
 
+
+@app.route('/add')
+def add():
+    return render_template('add.html')
+
+
+@app.route('/add_song')
+def add_song():
+    return render_template('add_song.html')
 
 @app.route('/display_data')
 def display_data():
