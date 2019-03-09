@@ -267,7 +267,7 @@ def update_album(userName, artistName, albumName, songName, composerName, releas
 	album_id = c.execute("SELECT (id) FROM album WHERE name = '{}'".format(albumName))
 	artist_id = c.execute("SELECT (id) FROM artist WHERE name = '{}'".format(artistName))
 	composer_id = c.execute("SELECT (id) FROM composer WHERE name = '{}'".format(composerName))
-	print(f"Composer Id is {composer_id}")
+	print("Composer Id is {}".format(composer_id))
 
 	c.execute("INSERT INTO song (name, album_id) VALUES ('{}', '{}')".format(songName, album_id))
 	conn.commit()
@@ -303,3 +303,25 @@ def display_composer(composerName, username):
 	c.close()
 	conn.close()
 	return composer_data
+
+def get_music_id(table, name):
+	c, conn = connection()
+	c.execute("SELECT id FROM {} WHERE name LIKE '%{}%'".format(table, name))
+
+	data_id = c.fetchall()[0][0]
+
+	print("id: {}\nname: {} ".format(data_id, name))
+
+	c.close()
+	conn.close()
+	return data_id
+
+def delete(username, table, value):
+	userId = get_user_id(username)
+	c, conn = connection()
+	c.execute("DELETE FROM user_{} WHERE user_id = '{}' AND {}_id = '{}'".format(table, userId, table, get_music_id(table, value)))
+	conn.commit()
+
+	c.close()
+	conn.close
+

@@ -111,6 +111,17 @@ def newComposer():
         return render_template('dataAdded.html', data=request.form["composer"])
 
 
+@app.route('/delete', methods=["post"])
+def delete():
+	try:
+		session["loggedIn"]
+	except:
+		return render_template('login.html')
+	else:
+		db.delete(session["username"], request.form["data-type"], request.form["data"])
+		flash('Deleted {} from your music'.format(request.form["data"]))
+		return redirect(url_for('search'))
+
 @app.route('/new-album', methods=["post"])
 def newAlbum():
     try:
