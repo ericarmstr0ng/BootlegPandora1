@@ -248,14 +248,15 @@ def display_album(albumName, username):
 	userId = get_user_id(username)
 	c, conn = connection()
 	c.execute(
-		"SELECT DISTINCT song.name, composer.name, song.release_date, song.genre, song.url, a.name FROM song JOIN artist_song sa on song.id = sa.song_id JOIN artist a on sa.artist_id = a.id JOIN user_artist ua on a.id = ua.artist_id JOIN album on album.id = song.album_id JOIN composer_song cs on cs.song_id = song.id JOIN composer on cs.composer_id = composer.id WHERE user_id = '{}' AND album.name = '{}'".format(
-			userId, albumName))
+		"SELECT DISTINCT song.name, composer.name, song.release_date, song.genre, song.url, a.name FROM song JOIN artist_song sa on song.id = sa.song_id JOIN artist a on sa.artist_id = a.id JOIN user_artist ua on a.id = ua.artist_id JOIN album on album.id = song.album_id JOIN composer_song cs on cs.song_id = song.id JOIN composer on cs.composer_id = composer.id WHERE album.name = '{}'".format(
+			albumName))
 
 	album_data = c.fetchall()
 	print(userId)
 	print(albumName)
-	print('{{}}'.format(
+	print('{}'.format(
 		albumName))
+	print(album_data)
 	artist_name = album_data[0][5]
 	c.close()
 	conn.close()
@@ -275,11 +276,16 @@ def update_album(userName, artistName, albumName, songName, composerName, releas
 	c.execute("SELECT (id) FROM song WHERE name = '{}' AND album_id = '{}'".format(songName, album_id))
 	song_id = c.fetchall()[0][0]
 
-	c.execute("INSERT INTO artist_song (artist_id, song_id) VALUES ('{}', '{}')".format(artist_id, song_id))
+	print(artistName)
+	print(songName)
+
+	c.execute(
+		f"INSERT INTO artist_song (artist_id, song_id) VALUES ((SELECT artist.id FROM artist WHERE artist.name = '{artistName}' LIMIT 1),(SELECT song.id FROM song WHERE song.name = '{songName}' LIMIT 1))")
 	conn.commit()
 
 	if composer_id is not None:
-		c.execute("INSERT INTO composer_song (composer_id, song_id) VALUES ('{}', '{}')".format(composer_id, song_id))
+		c.execute(
+			f"INSERT INTO composer_song (composer_id, song_id) VALUES ((SELECT composer.id FROM composer WHERE composer.name = '{composerName}' LIMIT 1), (SELECT song.id FROM song WHERE song.name = '{songName}' LIMIT 1))")
 		conn.commit()
 
 	c.execute("INSERT INTO user_song (user_id, song_id) VALUES ('{}', '{}')".format(get_user_id(userName), song_id))

@@ -154,10 +154,10 @@ def updateAlbum():
     except:
         return render_template('login.html')
     else:
-        album_list = db.update_album(session["username"], request.form["artist"], request.form["album"],
-                                     request.form["song"], request.form["composer"], request.form["release"],
-                                     request.form["genre"], request.form["link"])
-        flash('Song Added')
+        db.update_album(session["username"], request.form["artist"], request.form["album"],
+                        request.form["song"], request.form["composer"], request.form["release"],
+                        request.form["genre"], request.form["link"])
+        album_list, artistName = db.display_album(request.form["album"], session["username"])
         return render_template('display_album.html', album_data=album_list, album=request.form["album"],
                                artist=request.form["artist"])
 
