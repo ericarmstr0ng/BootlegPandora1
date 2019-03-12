@@ -4,14 +4,50 @@ from flask import request
 from flask import session
 from flask import flash, redirect, url_for
 from flask_session import Session
+import json
+import requests
+import urllib
+import urllib.parse
+from urllib.parse import urlencode, quote_plus
+from factory import InfoForm
+
+
 
 from factory import create_app
 import db
 
+#  Client Keys
+CLIENT_ID = '4e3f3c32144244c09107fa56c451449c'
+CLIENT_SECRET = "2d05d721c21f4ced95e17438dc038e43"
+
+# Spotify URLS
+SPOTIFY_AUTH_URL = "https://accounts.spotify.com/en/authorize"
+SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
+SPOTIFY_API_BASE_URL = "https://api.spotify.com"
+API_VERSION = "v1"
+SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
+
+# Server-side Parameters
+CLIENT_SIDE_URL = "http://127.0.0.1"
+PORT = 56565
+REDIRECT_URI = "{}:{}/callback/q".format(CLIENT_SIDE_URL, PORT)
+SCOPE = "playlist-modify-public playlist-modify-private"
+STATE = ""
+SHOW_DIALOG_bool = True
+SHOW_DIALOG_str = str(SHOW_DIALOG_bool).lower()
+
+auth_query_parameters = {
+    "response_type": "code",
+    "redirect_uri": REDIRECT_URI,
+    "scope": SCOPE,
+    # "state": STATE,
+    # "show_dialog": SHOW_DIALOG_str,
+    "client_id": CLIENT_ID
+}
+
 app = create_app()
 app.config.from_object(__name__)
 Session(app)
-
 
 @app.route('/')
 def homepage():
@@ -113,14 +149,15 @@ def newComposer():
 
 @app.route('/delete', methods=["post"])
 def delete():
-	try:
-		session["loggedIn"]
-	except:
-		return render_template('login.html')
-	else:
-		db.delete(session["username"], request.form["data-type"], request.form["data"])
-		flash('Deleted {} from your music'.format(request.form["data"]))
-		return redirect(url_for('search'))
+    try:
+        session["loggedIn"]
+    except:
+        return render_template('login.html')
+    else:
+        db.delete(session["username"], request.form["data-type"], request.form["data"])
+        flash('Deleted {} from your music'.format(request.form["data"]))
+        return redirect(url_for('search'))
+
 
 @app.route('/new-album', methods=["post"])
 def newAlbum():
@@ -181,9 +218,24 @@ def add():
 def add_song():
     return render_template('add_song.html')
 
+
 @app.route('/display_data')
 def display_data():
     return render_template('displayData.html')
+
+
+@app.route('/play', methods=["GET", "POST"])
+def play():
+    form = InfoForm()
+    # if form.validate_on_submit():
+    #     session['playartist'] = form.artist.data
+    #     print(session['playartist'])
+    if request.method == 'POST':
+        session['playartist'] = form.artist.data
+        print(session['playartist'])
+        return redirect(url_for('play_artist'))
+
+    return render_template('playlist.html', form=form)
 
 
 @app.route('/new-user', methods=["POST"])
@@ -213,6 +265,52 @@ def dbTest():
         return "good"
     except Exception as e:
         return (str(e))
+
+
+@app.route("/play-artist")
+def play_artist():
+    # Authorization
+    url_args = "&".join(["{}={}".format(key, urllib.parse.quote(val)) for key, val in auth_query_parameters.items()])
+    auth_url = "{}/?{}".format(SPOTIFY_AUTH_URL, url_args)
+    print("authorized here")
+    return redirect(auth_url)
+
+
+@app.route("/callback/q")
+def callback():
+    # Requests refresh and access tokens
+    auth_token = request.args['code']
+    code_payload = {
+        "grant_type": "authorization_code",
+        "code": str(auth_token),
+        "redirect_uri": REDIRECT_URI
+    }
+    post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload, auth=(CLIENT_ID, CLIENT_SECRET))
+
+    # Tokens are Returned to Application
+    response_data = json.loads(post_request.text)
+    print("response data: ", response_data)
+    access_token = response_data["access_token"]
+    refresh_token = response_data["refresh_token"]
+    token_type = response_data["token_type"]
+    expires_in = response_data["expires_in"]
+    print(session)
+    # Use the access token to access Spotify API
+    authorization_header = {"Authorization": "Bearer {}".format(access_token)}
+    print(session['playartist'])
+    # Get profile data
+    playlist_data = {'q': {session['playartist']}, 'type': 'playlist', 'limit': '3'}
+    play_payload = urlencode(playlist_data, quote_via=quote_plus)
+    playlist_api_endpoint = "{}/search?{}".format(SPOTIFY_API_URL, play_payload)
+    playlists_response = requests.get(playlist_api_endpoint, headers=authorization_header)
+    play_data = json.loads(playlists_response.text)
+    print('endpoint: ')
+    print(playlist_api_endpoint)
+    print('URL is: ')
+    play_list_payload = play_data["playlists"]["items"]
+    # Combine profile and playlist data to display
+    display_arr = [play_data]
+    return render_template("displayData.html", playlist=play_list_payload)
 
 
 if __name__ == '__main__':
