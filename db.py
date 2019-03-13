@@ -280,12 +280,12 @@ def update_album(userName, artistName, albumName, songName, composerName, releas
 	print(songName)
 
 	c.execute(
-		f"INSERT INTO artist_song (artist_id, song_id) VALUES ((SELECT artist.id FROM artist WHERE artist.name = '{artistName}' LIMIT 1),(SELECT song.id FROM song WHERE song.name = '{songName}' LIMIT 1))")
+		"INSERT INTO artist_song (artist_id, song_id) VALUES ((SELECT artist.id FROM artist WHERE artist.name = '{}' LIMIT 1),(SELECT song.id FROM song WHERE song.name = '{}' LIMIT 1))".format(artistName, songName))
 	conn.commit()
 
 	if composer_id is not None:
 		c.execute(
-			f"INSERT INTO composer_song (composer_id, song_id) VALUES ((SELECT composer.id FROM composer WHERE composer.name = '{composerName}' LIMIT 1), (SELECT song.id FROM song WHERE song.name = '{songName}' LIMIT 1))")
+			"INSERT INTO composer_song (composer_id, song_id) VALUES ((SELECT composer.id FROM composer WHERE composer.name = '{}' LIMIT 1), (SELECT song.id FROM song WHERE song.name = '{}' LIMIT 1))".format(composerName, songName))
 		conn.commit()
 
 	c.execute("INSERT INTO user_song (user_id, song_id) VALUES ('{}', '{}')".format(get_user_id(userName), song_id))
