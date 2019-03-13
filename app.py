@@ -1,19 +1,17 @@
 from flask import Flask
+
 from flask import render_template
 from flask import request
 from flask import session
 from flask import flash, redirect, url_for
 from flask_session import Session
+from urllib.parse import urlencode, quote_plus
+from factory import InfoForm
+from factory import create_app
 import json
 import requests
 import urllib
 import urllib.parse
-from urllib.parse import urlencode, quote_plus
-from factory import InfoForm
-
-
-
-from factory import create_app
 import db
 
 #  Client Keys
@@ -136,7 +134,7 @@ def newArtist():
 
 
 @app.route('/new-composer', methods=["POST"])
-def newComposer():
+def new_composer():
     try:
         session["loggedIn"]
     except:
@@ -160,7 +158,7 @@ def delete():
 
 
 @app.route('/new-album', methods=["post"])
-def newAlbum():
+def new_album():
     try:
         session["loggedIn"]
     except:
@@ -172,7 +170,7 @@ def newAlbum():
 
 
 @app.route('/new-song', methods=["post"])
-def newSong():
+def new_song():
     try:
         session["loggedIn"]
     except:
@@ -185,7 +183,7 @@ def newSong():
 
 
 @app.route('/update-album', methods=["post"])
-def updateAlbum():
+def update_album():
     try:
         session["loggedIn"]
     except:
@@ -227,9 +225,6 @@ def display_data():
 @app.route('/play', methods=["GET", "POST"])
 def play():
     form = InfoForm()
-    # if form.validate_on_submit():
-    #     session['playartist'] = form.artist.data
-    #     print(session['playartist'])
     if request.method == 'POST':
         session['playartist'] = form.artist.data
         print(session['playartist'])
@@ -259,7 +254,7 @@ def new_user():
 
 
 @app.route('/db-test/', methods=["GET", "POST"])
-def dbTest():
+def db_test():
     try:
         c, conn = connection()
         return "good"
@@ -289,27 +284,20 @@ def callback():
 
     # Tokens are Returned to Application
     response_data = json.loads(post_request.text)
-    print("response data: ", response_data)
+
     access_token = response_data["access_token"]
-    refresh_token = response_data["refresh_token"]
-    token_type = response_data["token_type"]
-    expires_in = response_data["expires_in"]
-    print(session)
+
     # Use the access token to access Spotify API
     authorization_header = {"Authorization": "Bearer {}".format(access_token)}
-    print(session['playartist'])
+
     # Get profile data
     playlist_data = {'q': {session['playartist']}, 'type': 'playlist', 'limit': '3'}
     play_payload = urlencode(playlist_data, quote_via=quote_plus)
     playlist_api_endpoint = "{}/search?{}".format(SPOTIFY_API_URL, play_payload)
     playlists_response = requests.get(playlist_api_endpoint, headers=authorization_header)
     play_data = json.loads(playlists_response.text)
-    print('endpoint: ')
-    print(playlist_api_endpoint)
-    print('URL is: ')
     play_list_payload = play_data["playlists"]["items"]
-    # Combine profile and playlist data to display
-    display_arr = [play_data]
+
     return render_template("displayData.html", playlist=play_list_payload)
 
 
