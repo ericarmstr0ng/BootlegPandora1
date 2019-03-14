@@ -47,13 +47,15 @@ app = create_app()
 app.config.from_object(__name__)
 Session(app)
 
+
 def isLoggedIn():
-	try:
-		session["loggedIn"]
-	except:
-		return False
-	else:
-		return session["loggedIn"]
+    try:
+        session["loggedIn"]
+    except:
+        return False
+    else:
+        return session["loggedIn"]
+
 
 @app.route('/')
 def homepage():
@@ -62,29 +64,30 @@ def homepage():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-	if request.method == 'GET':
-		return render_template('login.html')
+    if request.method == 'GET':
+        return render_template('login.html')
 
-	if isLoggedIn():
-		return render_template('search.html', loggedIn=True)
-	else:
+    if isLoggedIn():
+        return render_template('search.html', loggedIn=True)
+    else:
 
-		if db.try_signon(request.form["email"], request.form["password"]):
-			session["loggedIn"] = True
-			session["username"] = db.get_username(request.form["email"])
+        if db.try_signon(request.form["email"], request.form["password"]):
+            session["loggedIn"] = True
+            session["username"] = db.get_username(request.form["email"])
 
-			return render_template('loggedIn.html', username=session["username"], loggedIn=True)
+            return render_template('loggedIn.html', username=session["username"], loggedIn=True)
 
-		else:
-			return render_template('badLogin.html', loggedIn=False)
+        else:
+            return render_template('badLogin.html', loggedIn=False)
 
 
 @app.route('/signout', methods=["GET"])
 def signout():
-	session["loggedIn"] = False
-	session["username"] = None
+    session["loggedIn"] = False
+    session["username"] = None
 
-	return redirect(url_for("login"))
+    return redirect(url_for("login"))
+
 
 @app.route('/find-artist', methods=["POST"])
 def findArtist():
@@ -99,22 +102,24 @@ def findArtist():
 
 @app.route('/find-song', methods=["POST"])
 def findSong():
-	if not isLoggedIn():
-		return render_template('login.html', loggedIn=False)
-	else:
-		song_list = db.display_song(request.form["song"], session["username"])
-		print(song_list)
-		return render_template('display_song.html', song_data=song_list, song=request.form["song"], loggedIn=True)
+    if not isLoggedIn():
+        return render_template('login.html', loggedIn=False)
+    else:
+        song_list, composer_data = db.display_song(request.form["song"], session["username"])
+        print(song_list)
+
+        return render_template('display_song.html', song_data=song_list, composer_data=composer_data,
+                               song=request.form["song"], loggedIn=True)
 
 
 @app.route('/find-album', methods=["POST"])
 def findAlbum():
-	if not isLoggedIn():
-		return render_template('login.html', loggedIn=False)
-	else:
-		album_list, artistName = db.display_album(request.form["album"], session["username"])
-		print(album_list)
-		return render_template('display_album.html', album_data=album_list, album=request.form["album"],
+    if not isLoggedIn():
+        return render_template('login.html', loggedIn=False)
+    else:
+        album_list, artistName = db.display_album(request.form["album"], session["username"])
+        print(album_list)
+        return render_template('display_album.html', album_data=album_list, album=request.form["album"],
                                artist=artistName, loggedIn=True)
 
 
@@ -125,7 +130,8 @@ def findComposer():
     else:
         composer_list = db.display_composer(request.form["composer"], session["username"])
         print(composer_list)
-        return render_template('display_composer.html', composer_data=composer_list, composer=request.form["composer"], loggedIn=True)
+        return render_template('display_composer.html', composer_data=composer_list, composer=request.form["composer"],
+                               loggedIn=True)
 
 
 @app.route('/new-artist', methods=["POST"])
@@ -140,32 +146,32 @@ def newArtist():
 
 @app.route('/new-composer', methods=["POST"])
 def new_composer():
-	if not isLoggedIn():
-		return render_template('login.html', loggedIn=False)
-	else:
-		db.create_composer(request.form["composer"], session["username"])
+    if not isLoggedIn():
+        return render_template('login.html', loggedIn=False)
+    else:
+        db.create_composer(request.form["composer"], session["username"])
 
-		return render_template('dataAdded.html', data=request.form["composer"], loggedIn=True)
+        return render_template('dataAdded.html', data=request.form["composer"], loggedIn=True)
 
 
 @app.route('/delete', methods=["post"])
 def delete():
-	if not isLoggedIn():
-		return render_template('login.html', loggedIn=False)
-	else:
-		db.delete(session["username"], request.form["data-type"], request.form["data"])
-		flash('Deleted {} from your music'.format(request.form["data"]))
-		return redirect(url_for('search'))
+    if not isLoggedIn():
+        return render_template('login.html', loggedIn=False)
+    else:
+        db.delete(session["username"], request.form["data-type"], request.form["data"])
+        flash('Deleted {} from your music'.format(request.form["data"]))
+        return redirect(url_for('search'))
 
 
 @app.route('/new-album', methods=["post"])
 def new_album():
-	if not isLoggedIn():
-		return render_template('login.html', loggedIn=False)
-	else:
-		db.create_album(session["username"], request.form["artist"], request.form["album"])
-		flash('Album Added')
-		return redirect(url_for('search'))
+    if not isLoggedIn():
+        return render_template('login.html', loggedIn=False)
+    else:
+        db.create_album(session["username"], request.form["artist"], request.form["album"])
+        flash('Album Added')
+        return redirect(url_for('search'))
 
 
 @app.route('/new-song', methods=["post"])
@@ -187,7 +193,7 @@ def update_album():
         db.update_album(session["username"], request.form["artist"], request.form["album"],
                         request.form["song"], request.form["composer"], request.form["release"],
                         request.form["genre"], request.form["link"])
-        album_list, artistName = db.display_album(request.form["album"], session["username"])
+        album_list, artist_name = db.display_album(request.form["album"], session["username"])
         return render_template('display_album.html', album_data=album_list, album=request.form["album"],
                                artist=request.form["artist"], loggedIn=True)
 
