@@ -330,6 +330,36 @@ def update_album(userName, artistName, albumName, songName, composerName, releas
 	return album_data
 
 
+def get_internal_data(table):
+	c, conn = connection()
+	c.execute(
+			"SELECT name, id "
+			"FROM {}".format(table))
+
+	artist_data = c.fetchall()
+	c.close()
+	conn.close()
+	return artist_data
+
+def get_data():
+	data = {}
+
+	data["artists"] = get_internal_data("artist")
+	data["composers"] = get_internal_data("composer")
+	data["songs"] = get_internal_data("song")
+	data["albums"] = get_internal_data("album")
+
+	return data
+
+
+def connect_data(table, data_id, username):
+	userId = get_user_id(username)
+	c, conn = connection()
+
+	c.execute("INSERT INTO user_{} (user_id, {}_id) "
+			"VALUES ('{}','{}')".format(table, table, userId, data_id))
+
+
 def display_composer(composerName, username):
 	userId = get_user_id(username)
 	c, conn = connection()

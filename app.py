@@ -197,6 +197,25 @@ def update_album():
         return render_template('display_album.html', album_data=album_list, album=request.form["album"],
                                artist=request.form["artist"], loggedIn=True)
 
+@app.route('/connect-artist', methods=["post"])
+def connect_artist():
+	db.connect_data("artist",request.form["artist"],session["username"])
+	return render_template('search.html', loggedIn=True)
+
+@app.route('/connect-song', methods=["post"])
+def connect_song():
+	db.connect_data("song",request.form["song"],session["username"])
+	return render_template('search.html', loggedIn=True)
+
+@app.route('/connect-composer', methods=["post"])
+def connect_composer():
+	db.connect_data("composer",request.form["composer"],session["username"])
+	return render_template('search.html', loggedIn=True)
+
+@app.route('/connect-album', methods=["post"])
+def connect_album():
+	db.connect_data("album",request.form["album"],session["username"])
+	return render_template('search.html', loggedIn=True)
 
 @app.route('/signup')
 def signup():
@@ -210,7 +229,8 @@ def search():
 
 @app.route('/add')
 def add():
-    return render_template('add.html', loggedIn=isLoggedIn())
+	data = db.get_data();
+	return render_template('add.html', data=data, loggedIn=isLoggedIn())
 
 
 @app.route('/add_song')

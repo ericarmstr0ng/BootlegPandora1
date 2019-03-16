@@ -2,7 +2,48 @@
 
 {% block content %}
     <div class="container">
-        <h1 class="display-4">Add Music!</h1>
+		<h1 class="display-4">Add Music to Account!</h1>
+		<div class="col-md-auto">
+			<span class-"badge badge-pill badge-info">Add Artist</span>
+			<div class="form-row pb-3">
+				<div class="col-sml">
+					<form method="post" action="connect-artist">
+						<select name="artist">
+							{% for artist in data.artists %}
+							<option value="{{ artist[1] }}">{{ artist[0] }}</option>
+							{% endfor %}
+						</select>
+						<button type="submit" class="btn btn-primary">Add</button>
+					</form>
+					<form method="post" action="connect-song">
+						<select name="song">
+							{% for song in data.songs %}
+							<option value="{{ song[1] }}">{{ song[0] }}</option>
+							{% endfor %}
+						</select>
+						<button type="submit" class="btn btn-primary">Add</button>
+					</form>
+					<form method="post" action="connect-composer">
+						<select name="composer">
+							{% for composer in data.composers %}
+							<option value="{{ composer[1] }}">{{ composer[0] }}</option>
+							{% endfor %}
+						</select>
+						<button type="submit" class="btn btn-primary">Add</button>
+					</form>
+					<form method="post" action="connect-album">
+						<select name="album">
+							{% for album in data.albums %}
+							<option value="{{ album[1] }}">{{ album[0] }}</option>
+							{% endfor %}
+						</select>
+						<button type="submit" class="btn btn-primary">Add</button>
+					</form>
+
+				</div>
+			</div>
+		</div>
+        <h1 class="display-4">Add New Music to Database!</h1>
         <div class="col-md-auto">
             <span class="badge badge-pill badge-info">Add Artist</span>
             <div class="form-row pb-3">
