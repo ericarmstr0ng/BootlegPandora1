@@ -4,44 +4,54 @@
     <div class="container">
 		<h1 class="display-4">Add Music to Account!</h1>
 		<div class="col-md-auto">
-			<span class-"badge badge-pill badge-info">Add Artist</span>
-			<div class="form-row pb-3">
+
+            <div class="form-row">
 				<div class="col-sml">
+                    <span class-"badge badge-pill badge-info">Add Artist</span>
 					<form method="post" action="connect-artist">
-						<select name="artist">
+                        <select name="artist" class="form-control">
 							{% for artist in data.artists %}
 							<option value="{{ artist[1] }}">{{ artist[0] }}</option>
 							{% endfor %}
 						</select>
-						<button type="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" class="btn btn-primary m-1">Add</button>
 					</form>
-					<form method="post" action="connect-song">
-						<select name="song">
+                </div>
+
+                <div class="col-sml">
+                    <span class-"badge badge-pill badge-info">Add Song</span>
+                    <form method="post" action="connect-song">
+                        <select name="song" class="form-control">
 							{% for song in data.songs %}
 							<option value="{{ song[1] }}">{{ song[0] }}</option>
 							{% endfor %}
 						</select>
-						<button type="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" class="btn btn-primary m-1">Add</button>
 					</form>
+                </div>
+                <div class="col-sml">
+                    <span class-"badge badge-pill badge-info">Add Composer</span>
 					<form method="post" action="connect-composer">
-						<select name="composer">
+                        <select name="composer" class="form-control">
 							{% for composer in data.composers %}
 							<option value="{{ composer[1] }}">{{ composer[0] }}</option>
 							{% endfor %}
 						</select>
-						<button type="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" class="btn btn-primary m-1">Add</button>
 					</form>
+                </div>
+                <div class="col-sml">
+                    <span class-"badge badge-pill badge-info">Add Album</span>
 					<form method="post" action="connect-album">
-						<select name="album">
+                        <select name="album" class="form-control">
 							{% for album in data.albums %}
 							<option value="{{ album[1] }}">{{ album[0] }}</option>
 							{% endfor %}
 						</select>
-						<button type="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" class="btn btn-primary m-1">Add</button>
 					</form>
-
 				</div>
-			</div>
+                {#			</div>#}
 		</div>
         <h1 class="display-4">Add New Music to Database!</h1>
         <div class="col-md-auto">
