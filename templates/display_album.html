@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="container">
     <h1 class="display-4">{{ album }}</h1>
     <h1 class="display-5">{{ artist }}</h1>
     <h2 class="display-6">Album Info</h2>
@@ -12,6 +13,7 @@
         <th>Release Date</th>
         <th>Genre</th>
         <th>Link</th>
+        <th>Update</th>
         </thead>
         <tbody>
         {% for r in album_data %}
@@ -21,14 +23,21 @@
                 <td> {{ r.2 }}</td>
                 <td> {{ r.3 }}</td>
                 <td> {{ r.4 }}</td>
+                <td>
+                    <form action="up_song" method="post">
+                        <input type="hidden" name="song_name" value="{{ r.0 }}">
+                        <input type="hidden" name="album" value="{{ album }}">
+                        <input type="hidden" name="artist" value="{{ artist }}">
+                        <button type="submit" class="btn btn-primary">Update Song</button>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
 
-    </div>
-    <h2 class="display-6">Add song to "{{ album }}"</h2>
+        <h2 class="display-6">Add song to "{{ album }}"</h2>
     <form action="update-album" method="post" class="pb-3">
         <input type="hidden" name="artist" value="{{ artist }}"/>
         <input type="hidden" name="album" value="{{ album }}"/>
@@ -64,6 +73,6 @@
 		<input type="submit" class="btn btn-primary" value="Delete album">
 	</form>
 
-
+    </div>
 
 {% endblock %}

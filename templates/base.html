@@ -29,7 +29,14 @@
 			<a class="px-md-2" href="{{ url_for('play') }}">Create Playlist!</a>
         </nav>
     </div>
-    
+
+    {% for mess in get_flashed_messages() %}
+        <div class="alert" role="alert">
+            <h4 class="alert-heading">{{ mess }}</h4>
+        </div>
+    {% endfor %}
+
+
     {% block content %}
     
     {% endblock %}

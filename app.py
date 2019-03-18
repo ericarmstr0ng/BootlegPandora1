@@ -96,8 +96,12 @@ def findArtist():
     else:
         artist_list, song_list = db.display_artist(request.form["artist"], session["username"])
         print(artist_list)
-        return render_template('display_by_artist.html', album_data=artist_list, song_data=song_list,
-                               artist=request.form["artist"], loggedIn=True)
+        if len(artist_list) <= 0:
+            flash("Artist does not exist!")
+            return redirect(url_for('search'))
+        else:
+            return render_template('display_by_artist.html', album_data=artist_list, song_data=song_list,
+                                   artist=request.form["artist"], loggedIn=True)
 
 
 @app.route('/find-song', methods=["POST"])
@@ -107,9 +111,13 @@ def findSong():
     else:
         song_list, composer_data = db.display_song(request.form["song"], session["username"])
         print(song_list)
+        if len(song_list) <= 0:
+            flash("Song does not exist!")
+            return redirect(url_for('search'))
+        else:
 
-        return render_template('display_song.html', song_data=song_list, composer_data=composer_data,
-                               song=request.form["song"], loggedIn=True)
+            return render_template('display_song.html', song_data=song_list, composer_data=composer_data,
+                                   song=request.form["song"], loggedIn=True)
 
 
 @app.route('/find-album', methods=["POST"])
@@ -119,8 +127,12 @@ def findAlbum():
     else:
         album_list, artistName = db.display_album(request.form["album"], session["username"])
         print(album_list)
-        return render_template('display_album.html', album_data=album_list, album=request.form["album"],
-                               artist=artistName, loggedIn=True)
+        if len(album_list) <= 0:
+            flash("Album does not exist!")
+            return redirect(url_for('search'))
+        else:
+            return render_template('display_album.html', album_data=album_list, album=request.form["album"],
+                                   artist=artistName, loggedIn=True)
 
 
 @app.route('/find-composer', methods=["POST"])
@@ -130,8 +142,13 @@ def findComposer():
     else:
         composer_list = db.display_composer(request.form["composer"], session["username"])
         print(composer_list)
-        return render_template('display_composer.html', composer_data=composer_list, composer=request.form["composer"],
-                               loggedIn=True)
+        if len(composer_list) <= 0:
+            flash("Composer does not exist!")
+            return redirect(url_for('search'))
+        else:
+            return render_template('display_composer.html', composer_data=composer_list,
+                                   composer=request.form["composer"],
+                                   loggedIn=True)
 
 
 @app.route('/new-artist', methods=["POST"])
@@ -140,8 +157,8 @@ def newArtist():
         return render_template('login.html', loggedIn=False)
     else:
         db.create_artist(request.form["artist"], session["username"])
-
-        return render_template('dataAdded.html', data=request.form["artist"], loggedIn=True)
+        flash('Artist Added!')
+        return redirect(url_for('add'))
 
 
 @app.route('/new-composer', methods=["POST"])
@@ -150,8 +167,8 @@ def new_composer():
         return render_template('login.html', loggedIn=False)
     else:
         db.create_composer(request.form["composer"], session["username"])
-
-        return render_template('dataAdded.html', data=request.form["composer"], loggedIn=True)
+        flash('Song Added!')
+        return redirect(url_for('add'))
 
 
 @app.route('/delete', methods=["post"])
@@ -170,8 +187,8 @@ def new_album():
         return render_template('login.html', loggedIn=False)
     else:
         db.create_album(session["username"], request.form["artist"], request.form["album"])
-        flash('Album Added')
-        return redirect(url_for('search'))
+        flash('Album Added!')
+        return redirect(url_for('add'))
 
 
 @app.route('/new-song', methods=["post"])
@@ -181,8 +198,8 @@ def new_song():
     else:
         db.create_song(session["username"], request.form["artist"], request.form["song"], request.form["album"],
                        request.form["composer"])
-        flash('Song Added')
-        return redirect(url_for('search'))
+        flash('Song Added!')
+        return redirect(url_for('add'))
 
 
 @app.route('/update-album', methods=["post"])
@@ -197,25 +214,46 @@ def update_album():
         return render_template('display_album.html', album_data=album_list, album=request.form["album"],
                                artist=request.form["artist"], loggedIn=True)
 
+
 @app.route('/connect-artist', methods=["post"])
 def connect_artist():
-	db.connect_data("artist",request.form["artist"],session["username"])
-	return render_template('search.html', loggedIn=True)
+    db.connect_data("artist", request.form["artist"], session["username"])
+    return render_template('search.html', loggedIn=True)
+
 
 @app.route('/connect-song', methods=["post"])
 def connect_song():
-	db.connect_data("song",request.form["song"],session["username"])
-	return render_template('search.html', loggedIn=True)
+    db.connect_data("song", request.form["song"], session["username"])
+    return render_template('search.html', loggedIn=True)
+
 
 @app.route('/connect-composer', methods=["post"])
 def connect_composer():
-	db.connect_data("composer",request.form["composer"],session["username"])
-	return render_template('search.html', loggedIn=True)
+    db.connect_data("composer", request.form["composer"], session["username"])
+    return render_template('search.html', loggedIn=True)
+
 
 @app.route('/connect-album', methods=["post"])
 def connect_album():
-	db.connect_data("album",request.form["album"],session["username"])
-	return render_template('search.html', loggedIn=True)
+    db.connect_data("album", request.form["album"], session["username"])
+    return render_template('search.html', loggedIn=True)
+
+
+@app.route('/up_song', methods=["post"])
+def update_song():
+    sn = request.form["song_name"]
+    return render_template('update_song.html', song_name=sn, loggedIn=True)
+
+
+@app.route('/update_song', methods=["post"])
+def song_update():
+    print('made it to song_update')
+    album_list, artist_name = db.s_update(session['username'], request.form["song_name"], request.form["composer"],
+                                          request.form["release"], request.form["url"], request.form['album'])
+    print('made it to db in song_update')
+    return render_template('display_album.html', album_data=album_list, album=request.form["album"],
+                           artist=request.form["artist"], loggedIn=True)
+
 
 @app.route('/signup')
 def signup():
@@ -229,8 +267,8 @@ def search():
 
 @app.route('/add')
 def add():
-	data = db.get_data();
-	return render_template('add.html', data=data, loggedIn=isLoggedIn())
+    data = db.get_data();
+    return render_template('add.html', data=data, loggedIn=isLoggedIn())
 
 
 @app.route('/add_song')

@@ -419,6 +419,12 @@ h6, .h6 {
     line-height: 1.2;
 }
 
+.display-5 {
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1.2;
+}
+
 hr {
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -5439,13 +5445,13 @@ a.badge-dark:focus, a.badge-dark.focus {
 }
 
 .alert-dark {
-    color: #1b1e21;
-    background-color: #d6d8d9;
+    color: #545E6C;
+    background-color: #f5f5f5;
     border-color: #c6c8ca;
 }
 
 .alert-dark hr {
-    border-top-color: #b9bbbe;
+    border-top-color: #f5f5f5;
 }
 
 .alert-dark .alert-link {
