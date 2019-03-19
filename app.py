@@ -239,20 +239,32 @@ def connect_album():
     return render_template('search.html', loggedIn=True)
 
 
-@app.route('/up_song', methods=["post"])
+@app.route('/update_song', methods=["post"])
 def update_song():
     sn = request.form["song_name"]
-    return render_template('update_song.html', song_name=sn, loggedIn=True)
+    an = request.form["album"]
+    return render_template('update_song.html', album=an, song_name=sn, loggedIn=True)
 
 
-@app.route('/update_song', methods=["post"])
+# *****************************************************************************
+# song update
+# *****************************************************************************
+
+
+@app.route('/song_update', methods=["post"])
 def song_update():
     print('made it to song_update')
-    album_list, artist_name = db.s_update(session['username'], request.form["song_name"], request.form["composer"],
-                                          request.form["release"], request.form["url"], request.form['album'])
+    album_list, artist_name = db.song_update(session['username'], request.form["song_name"], request.form["composer"],
+                                             request.form["release"], request.form["url"], request.form['album'],
+                                             request.form["new_song"])
     print('made it to db in song_update')
     return render_template('display_album.html', album_data=album_list, album=request.form["album"],
                            artist=request.form["artist"], loggedIn=True)
+
+
+# *****************************************************************************
+# song update
+#*****************************************************************************
 
 
 @app.route('/signup')

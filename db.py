@@ -301,7 +301,12 @@ def display_album(albumName, username):
     return album_data, artist_name[0][0]
 
 
-def s_update(username, song_name, u_comp, u_release, u_url, albumName):
+# *****************************************************************************
+# song update
+# *****************************************************************************
+
+
+def song_update(username, song_name, u_comp, u_release, u_url, albumName, new_song):
     print("albumName")
     userId = get_user_id(username)
     c, conn = connection()
@@ -309,6 +314,17 @@ def s_update(username, song_name, u_comp, u_release, u_url, albumName):
         "UPDATE song "
         "SET release_date = '{}'"
         "WHERE name = '{}'".format(u_release, song_name)
+    )
+    c.execute(
+        "UPDATE song "
+        "JOIN composer_song cs ON song.id = cs.song_id "
+        "SET composer.id = '{}'"
+        "WHERE name = '{}'".format(u_release, song_name)
+    )
+    c.execute(
+        "UPDATE song "
+        "SET name = '{}'"
+        "WHERE name = '{}'".format(new_song, song_name)
     )
 
     c.execute(
