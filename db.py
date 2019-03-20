@@ -307,7 +307,7 @@ def display_album(albumName, username):
 # *****************************************************************************
 
 
-def song_update(username, song_name, u_comp, u_release, u_url, albumName, new_song):
+def song_update(username, song_name, u_release, u_url, u_genre):
     print("albumName")
     userId = get_user_id(username)
     c, conn = connection()
@@ -316,40 +316,24 @@ def song_update(username, song_name, u_comp, u_release, u_url, albumName, new_so
         "SET release_date = '{}'"
         "WHERE name = '{}'".format(u_release, song_name)
     )
+    conn.commit()
     c.execute(
         "UPDATE song "
-        "JOIN composer_song cs ON song.id = cs.song_id "
-        "SET composer.id = '{}'"
-        "WHERE name = '{}'".format(u_release, song_name)
+        "SET url = '{}'"
+        "WHERE name = '{}'".format(u_url, song_name)
     )
-    c.execute(
-        "UPDATE song "
-        "SET name = '{}'"
-        "WHERE name = '{}'".format(new_song, song_name)
-    )
+    conn.commit()
 
     c.execute(
-        "SELECT DISTINCT song.name, composer.name, song.release_date, song.genre, song.url, a.name "
-        "FROM song JOIN artist_song sa ON song.id = sa.song_id "
-        "JOIN artist a ON sa.artist_id = a.id "
-        "JOIN user_artist ua ON a.id = ua.artist_id "
-        "JOIN album ON album.id = song.album_id "
-        "JOIN composer_song cs ON cs.song_id = song.id "
-        "JOIN composer ON cs.composer_id = composer.id "
-        "WHERE album.name = '{}'".format(albumName))
-    album_data = c.fetchall()
-    print(album_data)
-    c.execute(
-        "SELECT artist.name "
-        "FROM artist JOIN artist_album aa ON artist.id = aa.artist_id "
-        "JOIN album ON album.id = aa.album_id "
-        "WHERE album.name = '{}'".format(albumName)
+        "UPDATE song "
+        "SET genre = '{}'"
+        "WHERE name = '{}'".format(u_genre, song_name)
     )
-    artist_name = c.fetchall()
-    print(artist_name)
+    conn.commit()
+
     c.close()
     conn.close()
-    return album_data, artist_name[0][0]
+
 
 
 def update_album(userName, artistName, albumName, songName, composerName, release, genre, link):
@@ -420,7 +404,7 @@ def connect_data(table, data_id, username):
 	c.execute("INSERT INTO user_{} (user_id, {}_id) "
 		"VALUES ('{}','{}')".format(table, table, userId, data_id))
 
-	conn.commit()
+    conn.commit()
 
 
 def display_composer(composerName, username):

@@ -11,14 +11,14 @@
         <th>Producer</th>
         <th>Release Date</th>
         <th>Genre</th>
-        <th>Link</th>
+        <th>URL</th>
         </thead>
         <tbody>
         {% for r in song_data %}
             <tr class="table-active">
                 <td> {{ r.0 }}</td>
                 <td> {{ r.1 }}</td>
-                <td> {{ composer_data.0 }}</td>
+                <td> {{ composer_data.0.0 }}</td>
                 <td> {{ r.2 }}</td>
                 <td> {{ r.3 }}</td>
                 <td> {{ r.4 }}</td>
