@@ -286,6 +286,7 @@ def display_album(albumName, username):
         "JOIN composer_song cs ON cs.song_id = song.id "
         "JOIN composer ON cs.composer_id = composer.id "
         "WHERE album.name = '{}'".format(albumName))
+
     album_data = c.fetchall()
     print(album_data)
     c.execute(
