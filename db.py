@@ -294,36 +294,35 @@ def display_song(songName, username):
 
 
 def display_album(albumName, username):
-    userId = get_user_id(username)
-    c, conn = connection()
-    c.execute(
-        "SELECT DISTINCT song.name, composer.name, song.release_date, song.genre, song.url, a.name "
-        "FROM song JOIN artist_song sa ON song.id = sa.song_id "
-        "JOIN artist a ON sa.artist_id = a.id "
-        "JOIN user_artist ua ON a.id = ua.artist_id "
-        "JOIN album ON album.id = song.album_id "
-        "JOIN composer_song cs ON cs.song_id = song.id "
-        "JOIN composer ON cs.composer_id = composer.id "
-        "WHERE album.name = '{}'".format(albumName))
+	userId = get_user_id(username)
+	c, conn = connection()
+	c.execute(
+		"SELECT DISTINCT song.name, composer.name, song.release_date, song.genre, song.url, a.name "
+		"FROM song JOIN artist_song sa ON song.id = sa.song_id "
+		"JOIN artist a ON sa.artist_id = a.id "
+		"JOIN user_artist ua ON a.id = ua.artist_id "
+		"JOIN album ON album.id = song.album_id "
+		"JOIN composer_song cs ON cs.song_id = song.id "
+		"JOIN composer ON cs.composer_id = composer.id "
+		"WHERE album.name = '{}'".format(albumName))
 
-    album_data = c.fetchall()
-    print(album_data)
-    c.execute(
-        "SELECT artist.name "
-        "FROM artist JOIN artist_album aa ON artist.id = aa.artist_id "
-        "JOIN album ON album.id = aa.album_id "
-        "WHERE album.name = '{}'".format(albumName)
-    )
-    artist_name = c.fetchall()
-    print('artist name: ')
-    print(artist_name)
-    if len(artist_name) > 0:
-        artist_name = artist_name[0][0]
+	album_data = c.fetchall()
+	print(album_data)
+	c.execute(
+		"SELECT artist.name "
+		"FROM artist JOIN artist_album aa ON artist.id = aa.artist_id "
+		"JOIN album ON album.id = aa.album_id "
+		"WHERE album.name = '{}'".format(albumName)
+	)
+	artist_name = c.fetchall()
 
-    print(artist_name)
-    c.close()
-    conn.close()
-    return album_data, artist_name
+	if len(artist_name) == 0:
+		artist_name = [[""]]
+
+	print(artist_name)
+	c.close()
+	conn.close()
+	return album_data, artist_name[0][0]
 
 
 # *****************************************************************************
