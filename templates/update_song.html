@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="container">
+        <h1 class="display-4">Update {{ song_name }} Release or Link!</h1>
+        <div class="row justify-content-md-center">
+            <form method="post" action="{{ url_for('song_update') }}">
+
+                <div class="form-group">
+                    <label for="Release">Release Date</label>
+                    <input type="text" class="form-control" name="release" id="release" aria-describedby="releaseHelp"
+                           placeholder="Release Date">
+                </div>
+                <div class="form-group">
+                    <label for="url">Link</label>
+                    <input type="text" class="form-control" name="url" id="url" aria-describedby="urlHelp"
+                           placeholder="URL">
+                </div>
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <input type="text" class="form-control" name="genre" id="genre" aria-describedby="genreHelp"
+                           placeholder="Genre">
+                </div>
+                <input type="hidden" name="album" value="{{ album }}">
+                <input type="hidden" name="artist" value="{{ artist }}">
+                <input type="hidden" name="song_name" value="{{ song_name }}">
+                <button type="submit" class="btn btn-primary">Update Song!</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
