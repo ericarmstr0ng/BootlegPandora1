@@ -246,25 +246,16 @@ def update_song():
     return render_template('update_song.html', album=an, song_name=sn, loggedIn=True)
 
 
-# *****************************************************************************
-# song update
-# *****************************************************************************
-
-
 @app.route('/song_update', methods=["post"])
 def song_update():
     print('made it to song_update')
-    album_list, artist_name = db.song_update(session['username'], request.form["song_name"], request.form["composer"],
-                                             request.form["release"], request.form["url"], request.form['album'],
-                                             request.form["new_song"])
+    db.song_update(session['username'], request.form["song_name"],
+                   request.form["release"], request.form["url"], request.form["genre"])
     print('made it to db in song_update')
+    album_list, artistName = db.display_album(request.form["album"], session["username"])
+
     return render_template('display_album.html', album_data=album_list, album=request.form["album"],
-                           artist=request.form["artist"], loggedIn=True)
-
-
-# *****************************************************************************
-# song update
-#*****************************************************************************
+                           artist=artistName, loggedIn=True)
 
 
 @app.route('/signup')
@@ -279,7 +270,7 @@ def search():
 
 @app.route('/add')
 def add():
-    data = db.get_data();
+    data = db.get_data()
     return render_template('add.html', data=data, loggedIn=isLoggedIn())
 
 
