@@ -337,41 +337,46 @@ def song_update(username, song_name, u_release, u_url, u_genre):
 
 
 def update_album(userName, artistName, albumName, songName, composerName, release, genre, link):
-    c, conn = connection()
-    album_id = c.execute("SELECT (id) FROM album WHERE name = '{}'".format(albumName))
-    artist_id = c.execute("SELECT (id) FROM artist WHERE name = '{}'".format(artistName))
-    composer_id = c.execute("SELECT (id) FROM composer WHERE name = '{}'".format(composerName))
-    print("Composer Id is {}".format(composer_id))
-    # Insert song into
-    c.execute("INSERT INTO song (name, album_id, release_date, genre, url) "
-              "VALUES ('{}', '{}', '{}', '{}', '{}')".format(songName, album_id, release, genre, link))
-    conn.commit()
+	c, conn = connection()
+	album_id = c.execute("SELECT (id) FROM album WHERE name = '{}'".format(albumName))
+	artist_id = c.execute("SELECT (id) FROM artist WHERE name = '{}'".format(artistName))
 
-    c.execute("SELECT (id) FROM song WHERE name = '{}' AND album_id = '{}'".format(songName, album_id))
-    song_id = c.fetchall()[0][0]
+	if composerName == None or composerName == "":
+		composer_id = None
+	else:
+		composer_id = c.execute("SELECT (id) FROM composer WHERE name = '{}'".format(composerName))
 
-    c.execute(
-        "INSERT INTO artist_song (artist_id, song_id) "
-        "VALUES ((SELECT artist.id FROM artist "
-        "WHERE artist.name = '{}' LIMIT 1),"
-        "(SELECT song.id FROM song WHERE song.name = '{}' LIMIT 1))".format(artistName, songName))
+	print("Composer Id is {}".format(composer_id))
+	# Insert song into
+	c.execute("INSERT INTO song (name, album_id, release_date, genre, url) "
+		"VALUES ('{}', '{}', '{}', '{}', '{}')".format(songName, album_id, release, genre, link))
+	conn.commit()
 
-    conn.commit()
+	c.execute("SELECT (id) FROM song WHERE name = '{}' AND album_id = '{}'".format(songName, album_id))
+	song_id = c.fetchall()[0][0]
 
-    if composer_id is not None:
-        c.execute(
-            "INSERT INTO composer_song (composer_id, song_id) VALUES ((SELECT composer.id FROM composer WHERE composer.name = '{}' LIMIT 1), (SELECT song.id FROM song WHERE song.name = '{}' LIMIT 1))".format(
-                composerName, songName))
-        conn.commit()
+	c.execute(
+		"INSERT INTO artist_song (artist_id, song_id) "
+		"VALUES ((SELECT artist.id FROM artist "
+		"WHERE artist.name = '{}' LIMIT 1),"
+		"(SELECT song.id FROM song WHERE song.name = '{}' LIMIT 1))".format(artistName, songName))
 
-    c.execute("INSERT INTO user_song (user_id, song_id) VALUES ('{}', '{}')".format(get_user_id(userName), song_id))
+	conn.commit()
 
-    conn.commit()
-    album_data = c.fetchall()
-    c.close()
-    conn.close()
+	if composer_id is not None:
+		c.execute(
+			"INSERT INTO composer_song (composer_id, song_id) VALUES ((SELECT composer.id FROM composer WHERE composer.name = '{}' LIMIT 1), (SELECT song.id FROM song WHERE song.name = '{}' LIMIT 1))".format(
+				composerName, songName))
+		conn.commit()
 
-    return album_data
+	c.execute("INSERT INTO user_song (user_id, song_id) VALUES ('{}', '{}')".format(get_user_id(userName), song_id))
+
+	conn.commit()
+	album_data = c.fetchall()
+	c.close()
+	conn.close()
+
+	return album_data
 
 
 def get_internal_data(table):
@@ -404,7 +409,7 @@ def connect_data(table, data_id, username):
 	c.execute("INSERT INTO user_{} (user_id, {}_id) "
 		"VALUES ('{}','{}')".format(table, table, userId, data_id))
 
-    conn.commit()
+	conn.commit()
 
 
 def display_composer(composerName, username):
