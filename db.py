@@ -398,11 +398,11 @@ def get_data():
 
 
 def connect_data(table, data_id, username):
-    userId = get_user_id(username)
-    c, conn = connection()
+	userId = get_user_id(username)
+	c, conn = connection()
 
-    c.execute("INSERT INTO user_{} (user_id, {}_id) "
-              "VALUES ('{}','{}')".format(table, table, userId, data_id))
+	c.execute("INSERT INTO user_{} (user_id, {}_id) "
+		"VALUES ('{}','{}')".format(table, table, userId, data_id))
 
     conn.commit()
 
