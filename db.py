@@ -420,6 +420,8 @@ def connect_data(table, data_id, username):
     c.execute("INSERT INTO user_{} (user_id, {}_id) "
               "VALUES ('{}','{}')".format(table, table, userId, data_id))
 
+	conn.commit()
+
 
 def display_composer(composerName, username):
     userId = get_user_id(username)
