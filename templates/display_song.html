@@ -30,9 +30,10 @@
 
     </div>
     <hr class="my-4">
-    <div>
-        <button type="submit" class="btn btn-primary">Delete Record</button>
-    </div>
-
+    <form method="post" action="/delete">
+		<input type="hidden" name="data-type" value="song">
+		<input type="hidden" name="data" value="{{ song }}">
+		<input type="submit" class="btn btn-primary" value="Delete song">
+	</form>
 
 {% endblock %}
