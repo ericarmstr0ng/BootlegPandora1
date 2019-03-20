@@ -232,24 +232,39 @@ def display_artist(artistName, username):
         "JOIN artist_album aa on album.id = aa.album_id "
         "JOIN artist a on aa.artist_id = a.id "
         "JOIN user_artist ua on a.id = ua.artist_id "
-        "WHERE user_id = '{}' "
-        "AND a.name = '{}'".format(userId, artistName))
+        "WHERE a.name = '{}'".format(artistName))
     album_data = c.fetchall()
 
     c.execute(
-        "SELECT DISTINCT song.name, album.name, composer.name, song.release_date, song.genre, song.url "
+        "SELECT DISTINCT song.name, album.name, song.release_date, song.genre, song.url "
+        "FROM song JOIN artist_song sa on song.id = sa.song_id "
+        "JOIN artist a on sa.artist_id = a.id "
+        "JOIN user_artist ua on a.id = ua.artist_id "
+        "JOIN album on album.id = song.album_id "
+        "WHERE a.name = '{}'".format(artistName))
+    song_data = c.fetchall()
+    print(song_data)
+
+    c.execute(
+        "SELECT composer.name "
         "FROM song JOIN artist_song sa on song.id = sa.song_id "
         "JOIN artist a on sa.artist_id = a.id "
         "JOIN user_artist ua on a.id = ua.artist_id "
         "JOIN album on album.id = song.album_id "
         "JOIN composer_song cs on cs.song_id = song.id "
         "JOIN composer on cs.composer_id = composer.id "
-        "WHERE user_id = '{}' AND a.name = '{}'".format(userId, artistName))
-    song_data = c.fetchall()
+        "WHERE a.name = '{}'".format(artistName))
+
+    composer_data = c.fetchall()
+
+    if len(composer_data) > 0:
+        composer_data = composer_data[0][0]
+    else:
+        composer_data = 'None'
 
     c.close()
     conn.close()
-    return album_data, song_data
+    return album_data, song_data, composer_data
 
 
 def display_song(songName, username):
@@ -263,12 +278,16 @@ def display_song(songName, username):
         "JOIN album on album.id = song.album_id "
         "WHERE user_id = '{}' AND song.name = '{}'".format(userId, songName))
     song_data = c.fetchall()
-
+    print(song_data)
     c.execute(
         "SELECT composer.name from composer join composer_song cs on composer.id = cs.composer_id "
         "JOIN song on song.id = cs.song_id WHERE song.name = '{}'".format(songName)
     )
     composer_data = c.fetchall()
+    if len(composer_data) > 0:
+        composer_data = composer_data[0][0]
+    else:
+        composer_data = 'None'
     c.close()
     conn.close()
     return song_data, composer_data

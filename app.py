@@ -85,7 +85,6 @@ def login():
 def signout():
     session["loggedIn"] = False
     session["username"] = None
-
     return redirect(url_for("login"))
 
 
@@ -94,13 +93,14 @@ def findArtist():
     if not isLoggedIn():
         return render_template('login.html', loggedIn=False)
     else:
-        artist_list, song_list = db.display_artist(request.form["artist"], session["username"])
+        artist_list, song_list, composer_data = db.display_artist(request.form["artist"], session["username"])
         print(artist_list)
         if len(artist_list) <= 0:
             flash("Artist does not exist!")
             return redirect(url_for('search'))
         else:
-            return render_template('display_by_artist.html', album_data=artist_list, song_data=song_list,
+            return render_template('display_by_artist.html', composer_data=composer_data, album_data=artist_list,
+                                   song_data=song_list,
                                    artist=request.form["artist"], loggedIn=True)
 
 
