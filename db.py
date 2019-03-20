@@ -265,8 +265,8 @@ def display_song(songName, username):
     song_data = c.fetchall()
 
     c.execute(
-        "SELECT composer.name from composer join composer_song cs on composer.id = cs.composer_id JOIN song on song.id = cs.song_id WHERE song.name = '{}'".format(
-            songName)
+        "SELECT composer.name from composer join composer_song cs on composer.id = cs.composer_id "
+        "JOIN song on song.id = cs.song_id WHERE song.name = '{}'".format(songName)
     )
     composer_data = c.fetchall()
     c.close()
